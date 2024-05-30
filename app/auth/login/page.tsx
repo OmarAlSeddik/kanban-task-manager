@@ -1,6 +1,6 @@
 import LoginForm from "@/components/forms/LoginForm";
 
-const page = () => {
+const LoginPage = () => {
   return (
     <main className="container flex h-screen items-center justify-center gap-4 p-0">
       <LoginForm />
@@ -8,4 +8,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default LoginPage;

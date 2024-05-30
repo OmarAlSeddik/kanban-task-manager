@@ -1,7 +1,9 @@
 "use server";
 
 import { getUserByEmail } from "@/data/user";
+import { createClient } from "@/lib/supabase/server";
 import { LoginSchema } from "@/schemas/login-schema";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 
 const login = async (values: z.infer<typeof LoginSchema>) => {
@@ -19,7 +21,18 @@ const login = async (values: z.infer<typeof LoginSchema>) => {
     return { error: "Email does not exist." };
   }
 
-  // TODO: handle auth here
+  const supabase = createClient();
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email: data.email,
+    password: data.password,
+  });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  redirect("/");
 };
 
 export default login;

@@ -1,5 +1,6 @@
 "use client";
 
+import signOut from "@/app/actions/signout";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import {
@@ -85,9 +86,9 @@ const MobileNav = ({
             <Button
               variant="destructive"
               className="mx-auto w-[90%]"
-              onClick={() => console.log("logout")}
+              onClick={() => signOut()}
             >
-              Logout
+              Sign Out
             </Button>
           </DialogClose>
         </DialogFooter>

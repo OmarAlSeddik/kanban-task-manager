@@ -1,4 +1,6 @@
 import Sidebar from "@/components/Sidebar";
+import { getBoardsByUserId } from "@/data/board";
+import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
@@ -21,8 +23,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = null;
-  const boards = null;
+  const supabase = createClient();
+  const { data } = await supabase.auth.getUser();
+  const boards = await getBoardsByUserId(data.user?.id || "");
 
   return (
     <html lang="en">
@@ -39,7 +42,7 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <div className="flex min-h-screen w-screen items-stretch overflow-hidden">
-            <Sidebar user={user} boards={boards} />
+            <Sidebar user={data.user} boards={boards} />
             {children}
           </div>
         </ThemeProvider>

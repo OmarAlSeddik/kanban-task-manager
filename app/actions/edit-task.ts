@@ -2,7 +2,6 @@
 
 import { db } from "@/lib/db";
 import { TaskSchema } from "@/schemas/task-schema";
-import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const editTask = async (
@@ -51,7 +50,7 @@ const editTask = async (
 
   updateSubtasks(taskId || "", subtasks);
 
-  revalidatePath("/", "layout");
+  // revalidatePath("/", "layout");
 
   return { success: "Task Edited!" };
 };

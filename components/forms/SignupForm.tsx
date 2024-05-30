@@ -1,6 +1,6 @@
 "use client";
 
-import registerUser from "@/app/actions/register-user";
+import signup from "@/app/actions/signup";
 import FormResult from "@/components/FormResult";
 import SubmitButton from "@/components/SubmitButton";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { RegisterSchema } from "@/schemas/register-schema";
+import { SignupSchema } from "@/schemas/signup-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useState, useTransition } from "react";
@@ -23,26 +23,27 @@ import { FcGoogle } from "react-icons/fc";
 import { FiGithub } from "react-icons/fi";
 import { z } from "zod";
 
-const RegisterForm = () => {
+const SignupForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof RegisterSchema>>({
-    resolver: zodResolver(RegisterSchema),
+  const form = useForm<z.infer<typeof SignupSchema>>({
+    resolver: zodResolver(SignupSchema),
     defaultValues: {
       name: "",
       email: "",
+      password: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof RegisterSchema>) {
+  async function onSubmit(values: z.infer<typeof SignupSchema>) {
     console.log(values);
     setError("");
     setSuccess("");
 
     startTransition(() => {
-      registerUser(values)
+      signup(values)
         .then((data) => {
           if (data?.error) {
             setError(data.error);
@@ -66,7 +67,7 @@ const RegisterForm = () => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex h-screen w-full max-w-lg flex-col justify-center gap-6 rounded bg-white p-8 dark:bg-gray2 md:h-auto"
       >
-        <h1 className="text-[1.25rem] font-bold">Register</h1>
+        <h1 className="text-[1.25rem] font-bold">Signup</h1>
         <div className="relative flex flex-col gap-6 pb-6">
           <FormField
             control={form.control}
@@ -106,7 +107,26 @@ const RegisterForm = () => {
               </FormItem>
             )}
           />
-          <SubmitButton isPending={isPending}>Register</SubmitButton>
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[0.75rem]">Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    id="password"
+                    placeholder="e.g. John.Doe@example.com"
+                    className="w-full rounded bg-gray6 p-4 text-black dark:bg-gray1 dark:text-white"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <SubmitButton isPending={isPending}>Signup</SubmitButton>
           <FormResult
             errorMessage={error}
             successMessage={success}
@@ -156,4 +176,4 @@ const RegisterForm = () => {
   );
 };
 
-export default RegisterForm;
+export default SignupForm;

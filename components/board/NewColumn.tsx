@@ -5,7 +5,7 @@ const NewColumn = ({ boardId }: { boardId: string }) => {
   return (
     <Dialog>
       <DialogTrigger>
-        <div className="flex h-full w-[17.5rem] shrink-0 cursor-pointer snap-center items-center justify-center rounded bg-gray5 text-gray4 transition hover:bg-gray4/25 dark:bg-gray2 dark:hover:bg-gray3/25">
+        <div className="flex h-full w-[17.5rem] shrink-0 cursor-pointer snap-center items-center justify-center rounded bg-white text-gray4 transition hover:bg-white/50 dark:bg-gray2 dark:hover:bg-gray2/50">
           + New Column
         </div>
       </DialogTrigger>

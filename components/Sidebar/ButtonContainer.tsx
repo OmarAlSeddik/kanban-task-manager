@@ -1,3 +1,4 @@
+import signOut from "@/app/actions/signout";
 import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import iconHideSidebar from "@/public/icon-hide-sidebar.svg";
@@ -28,12 +29,12 @@ const ButtonContainer = ({
           variant="destructive"
           className="flex flex-1 select-none items-center gap-4 rounded py-6"
           onClick={() => {
-            console.log("logout");
+            signOut();
             setIsActive(false);
           }}
         >
           <LogOut className="size-4" />
-          <span>Logout</span>
+          <span>Sign Out</span>
         </Button>
       </div>
       <ThemeToggle />

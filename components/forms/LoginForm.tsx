@@ -1,5 +1,6 @@
 "use client";
 
+import login from "@/app/actions/login";
 import FormResult from "@/components/FormResult";
 import SubmitButton from "@/components/SubmitButton";
 import { Button } from "@/components/ui/button";
@@ -24,22 +25,28 @@ import { z } from "zod";
 
 const LoginForm = () => {
   const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
+      password: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof LoginSchema>) {
-    setError("");
-    setSuccess("");
-
     startTransition(() => {
-      console.log(values);
+      login(values)
+        .then((data) => {
+          if (data?.error) {
+            setError(data.error);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setError("Something went wrong");
+        });
     });
   }
 
@@ -70,12 +77,27 @@ const LoginForm = () => {
               </FormItem>
             )}
           />
-          <SubmitButton isPending={isPending}>Login</SubmitButton>
-          <FormResult
-            errorMessage={error}
-            successMessage={success}
-            className="bottom-0"
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-[0.75rem]">Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    id="password"
+                    placeholder="e.g. John.Doe@example.com"
+                    className="w-full rounded bg-gray6 p-4 text-black dark:bg-gray1 dark:text-white"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
+          <SubmitButton isPending={isPending}>Login</SubmitButton>
+          <FormResult errorMessage={error} className="bottom-0" />
         </div>
         <div className="flex items-center">
           <div className="h-px flex-1 bg-gray4" />
@@ -110,10 +132,10 @@ const LoginForm = () => {
         <p className="flex justify-center gap-1">
           <span>Don&apos;t have an account?</span>
           <Link
-            href="/auth/register"
+            href="/auth/signup"
             className="text-primary transition hover:text-primary-hover"
           >
-            Register
+            Signup
           </Link>
         </p>
       </form>

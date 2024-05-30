@@ -15,12 +15,11 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  boards        Board[]
+  id     String  @id @default(cuid())
+  name   String?
+  email  String? @unique
+  image  String?
+  boards Board[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

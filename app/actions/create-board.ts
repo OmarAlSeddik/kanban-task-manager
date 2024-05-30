@@ -1,12 +1,14 @@
 "use server";
 
 import { db } from "@/lib/db";
+import { createClient } from "@/lib/supabase/server";
 import { BoardSchema } from "@/schemas/board-schema";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const createBoard = async (values: z.infer<typeof BoardSchema>) => {
-  const user = null;
+  const supabase = createClient();
+  const { data: userData } = await supabase.auth.getUser();
 
   const validatedFields = BoardSchema.safeParse(values);
 
@@ -21,7 +23,7 @@ const createBoard = async (values: z.infer<typeof BoardSchema>) => {
     data: {
       title: data.title,
       users: {
-        connect: [{ id: user?.id }],
+        connect: [{ id: userData.user?.id }],
       },
     },
   });

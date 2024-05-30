@@ -1,8 +1,9 @@
 import AddTaskForm from "@/components/forms/AddTaskForm";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { getBoardById } from "@/data/board";
+import { getBoardById, getBoardsByUserId } from "@/data/board";
 import { getColumnsByBoardId } from "@/data/column";
+import { createClient } from "@/lib/supabase/server";
 import iconAddTaskMobile from "@/public/icon-add-task-mobile.svg";
 import Image from "next/image";
 import Edit from "./Edit";
@@ -13,8 +14,9 @@ const Header = async ({ boardId }: { boardId: string }) => {
   const board = await getBoardById(boardId);
   const columns = await getColumnsByBoardId(boardId);
 
-  const user = null;
-  const boards = null;
+  const supabase = createClient();
+  const { data } = await supabase.auth.getUser();
+  const boards = await getBoardsByUserId(data.user?.id || "");
 
   return (
     <header className="absolute inset-x-0 top-0 flex h-16 justify-between border-b bg-white dark:bg-gray2 md:h-20 lg:h-24">
