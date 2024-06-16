@@ -1,5 +1,6 @@
 import Sidebar from "@/components/Sidebar";
 import { getBoardsByUserId } from "@/data/board";
+import { getUserById } from "@/data/user";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
@@ -26,6 +27,7 @@ export default async function RootLayout({
   const supabase = createClient();
   const { data } = await supabase.auth.getUser();
   const boards = await getBoardsByUserId(data.user?.id || "");
+  const user = await getUserById(data.user?.id || "");
 
   return (
     <html lang="en">
@@ -42,7 +44,7 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <div className="flex min-h-screen w-screen items-stretch overflow-hidden">
-            <Sidebar user={data.user} boards={boards} />
+            <Sidebar user={user} boards={boards} />
             {children}
           </div>
         </ThemeProvider>
