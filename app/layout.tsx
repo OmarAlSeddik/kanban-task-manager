@@ -44,6 +44,7 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <div className="flex min-h-screen w-screen items-stretch overflow-hidden">
+            {/* TODO: Mobile Header? */}
             <Sidebar user={user} boards={boards} />
             {children}
           </div>

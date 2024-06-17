@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
-const updateUserImage = async (userId: string, image: string) => {
+const updateAvatar = async (userId: string, image: string) => {
   await db.user.update({
     where: {
       id: userId,
@@ -18,4 +18,4 @@ const updateUserImage = async (userId: string, image: string) => {
   return { success: "Image Uploaded!" };
 };
 
-export default updateUserImage;
+export default updateAvatar;

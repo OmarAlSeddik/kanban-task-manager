@@ -1,11 +1,12 @@
 "use client";
 
-import updateUserImage from "@/app/actions/update-user-image";
+import updateAvatar from "@/app/actions/update-avatar";
 import { createClient } from "@/lib/supabase/client";
+import uploadFile from "@/lib/upload-file";
 import { cn } from "@/lib/utils";
 import { User } from "@prisma/client";
 import { Loader2 } from "lucide-react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useTransition } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -24,8 +25,8 @@ function getImageDisplayUrl(event: ChangeEvent<HTMLInputElement>) {
 
 const UploadImage = ({ user }: { user: User | null }) => {
   const [file, setFile] = useState<File>();
-  const [isUploading, setIsUploading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [isPending, startTransition] = useTransition();
 
   const supabase = createClient();
   const { data } = supabase.storage
@@ -55,31 +56,30 @@ const UploadImage = ({ user }: { user: User | null }) => {
           className="flex-1"
         />
         <Button
-          disabled={isUploading || !file}
+          disabled={isPending || !file}
           className="flex w-32 gap-2"
           onClick={async () => {
             if (file) {
-              setIsUploading(true);
-              const { data, error } = await supabase.storage
-                .from("avatars")
-                .upload(user?.id || "", file, { upsert: true });
-              if (error) {
-                console.log(error.message);
-              }
-              updateUserImage(user?.id as string, data?.path as string);
-              setIsUploading(false);
-              setProgress(0);
+              startTransition(async () => {
+                const url = await uploadFile(
+                  "avatars",
+                  user?.id || "",
+                  file,
+                  setProgress
+                );
+                updateAvatar(user?.id as string, url || "");
+              });
             }
           }}
         >
-          {isUploading && <Loader2 className="mr-2 size-4 animate-spin" />}
-          {isUploading ? "Uploading" : "Update"}
+          {isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+          {isPending ? "Uploading" : "Update"}
         </Button>
       </div>
-      <Progress
-        value={progress}
-        className={cn("h-1 w-full invisible", isUploading && "visible")}
-      />
+      <div className={cn("w-full invisible", isPending && "visible")}>
+        <Progress value={progress} className={"h-1 flex-1"} />
+        <p className="text-sm text-gray4">{progress.toFixed(0)}%</p>
+      </div>
     </div>
   );
 };
