@@ -1,7 +1,7 @@
 "use client";
 
+import ExtendedUser from "@/lib/types/ExtendedUser";
 import { cn } from "@/lib/utils";
-import { Board, User } from "@prisma/client";
 import { useState } from "react";
 import ButtonContainer from "./ButtonContainer";
 import Logo from "./Logo";
@@ -9,13 +9,7 @@ import Navigation from "./Navigation";
 import Profile from "./Profile";
 import SidebarToggle from "./SidebarToggle";
 
-const Sidebar = ({
-  user,
-  boards,
-}: {
-  user: User | null;
-  boards: Board[] | null | undefined;
-}) => {
+const Sidebar = ({ user }: { user: ExtendedUser | null }) => {
   const [isActive, setIsActive] = useState(false);
   if (!user) return null;
 
@@ -38,7 +32,7 @@ const Sidebar = ({
       >
         <div className="flex flex-col gap-12">
           <Logo />
-          <Navigation boards={boards} />
+          <Navigation user={user} />
         </div>
         <div className="flex flex-col gap-8">
           <Profile user={user} />

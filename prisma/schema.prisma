@@ -18,8 +18,8 @@ model User {
   id     String  @id @default(cuid())
   name   String?
   email  String? @unique
-  image  String?
   boards Board[]
+  avatar Avatar?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -31,6 +31,15 @@ model User {
 enum UserRole {
   ADMIN
   USER
+}
+
+model Avatar {
+  id    String  @id
+  user  User    @relation(fields: [id], references: [id])
+  image String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Board {

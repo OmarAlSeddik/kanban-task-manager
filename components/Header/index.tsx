@@ -1,11 +1,7 @@
-import AddTaskForm from "@/components/forms/AddTaskForm";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { getBoardById, getBoardsByUserId } from "@/data/board";
 import { getColumnsByBoardId } from "@/data/column";
 import { createClient } from "@/lib/supabase/server";
-import iconAddTaskMobile from "@/public/icon-add-task-mobile.svg";
-import Image from "next/image";
+import AddTask from "./AddTask";
 import Edit from "./Edit";
 import Logo from "./Logo";
 import MobileNav from "./MobileNav";
@@ -28,17 +24,7 @@ const Header = async ({ boardId }: { boardId: string }) => {
         <MobileNav title={board?.title} boards={boards} />
       </div>
       <div className="flex items-center gap-4 px-4">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button className="flex gap-2" disabled={columns?.length === 0}>
-              <Image src={iconAddTaskMobile} alt="Add Task" />
-              <span className="hidden md:block">Add New Task</span>
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <AddTaskForm boardId={boardId} columns={columns} />
-          </DialogContent>
-        </Dialog>
+        <AddTask boardId={boardId} columns={columns} />
         <Edit board={board} />
       </div>
     </header>

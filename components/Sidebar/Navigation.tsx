@@ -1,14 +1,17 @@
 import AddBoardForm from "@/components/forms/AddBoardForm";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import ExtendedUser from "@/lib/types/ExtendedUser";
 import { cn } from "@/lib/utils";
 import iconBoard from "@/public/icon-board.svg";
-import { Board } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
-const Navigation = ({ boards }: { boards: Board[] | null | undefined }) => {
+const Navigation = ({ user }: { user: ExtendedUser | null }) => {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const boards = user?.boards;
 
   return (
     <nav className="flex flex-col gap-4">
@@ -36,7 +39,7 @@ const Navigation = ({ boards }: { boards: Board[] | null | undefined }) => {
           </li>
         ))}
         <li>
-          <Dialog>
+          <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger>
               <div className="group flex w-60 cursor-pointer items-center gap-3 rounded-r-full px-6 py-3.5 text-primary transition hover:bg-gray5 hover:text-primary-hover dark:hover:bg-gray1">
                 <Image
@@ -48,7 +51,7 @@ const Navigation = ({ boards }: { boards: Board[] | null | undefined }) => {
               </div>
             </DialogTrigger>
             <DialogContent>
-              <AddBoardForm />
+              <AddBoardForm setOpen={setOpen} />
             </DialogContent>
           </Dialog>
         </li>

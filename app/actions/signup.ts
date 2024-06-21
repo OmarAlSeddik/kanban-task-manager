@@ -36,7 +36,13 @@ const signup = async (values: z.infer<typeof SignupSchema>) => {
       id: authData?.user?.id,
       name: data.name,
       email: data.email,
+      avatar: {
+        create: {
+          image: "",
+        },
+      },
     },
+    include: { avatar: true },
   });
 
   return { success: "A link has been sent to your email!" };

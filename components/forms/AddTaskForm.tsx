@@ -35,12 +35,13 @@ import { z } from "zod";
 const AddTaskForm = ({
   boardId,
   columns,
+  setOpen,
 }: {
   boardId: string;
   columns: Column[] | null | undefined;
+  setOpen: (state: boolean) => void;
 }) => {
   const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof TaskSchema>>({
@@ -60,19 +61,13 @@ const AddTaskForm = ({
 
   function onSubmit(values: z.infer<typeof TaskSchema>) {
     setError("");
-    setSuccess("");
 
     startTransition(() => {
       createTask(values)
         .then((data) => {
           if (data?.error) {
             setError(data.error);
-          }
-
-          if (data?.success) {
-            console.log(data.success);
-            setSuccess(data.success);
-          }
+          } else setOpen(false);
         })
         .catch((error) => {
           console.log(error);
@@ -199,9 +194,14 @@ const AddTaskForm = ({
           <SubmitButton isPending={isPending} className="flex-1">
             Create Task
           </SubmitButton>
-          <FormResult errorMessage={error} successMessage={success} />
+          <FormResult errorMessage={error} />
           <DialogClose asChild>
-            <Button type="button" variant="secondary" className="flex-1">
+            <Button
+              type="button"
+              variant="secondary"
+              className="flex-1"
+              disabled={isPending}
+            >
               Cancel
             </Button>
           </DialogClose>

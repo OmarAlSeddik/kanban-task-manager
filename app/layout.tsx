@@ -1,5 +1,4 @@
 import Sidebar from "@/components/Sidebar";
-import { getBoardsByUserId } from "@/data/board";
 import { getUserById } from "@/data/user";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
@@ -25,9 +24,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const supabase = createClient();
-  const { data } = await supabase.auth.getUser();
-  const boards = await getBoardsByUserId(data.user?.id || "");
-  const user = await getUserById(data.user?.id || "");
+  const { data: authData } = await supabase.auth.getUser();
+  const user = await getUserById(authData.user?.id || "");
 
   return (
     <html lang="en">
@@ -44,8 +42,7 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <div className="flex min-h-screen w-screen items-stretch overflow-hidden">
-            {/* TODO: Mobile Header? */}
-            <Sidebar user={user} boards={boards} />
+            <Sidebar user={user} />
             {children}
           </div>
         </ThemeProvider>

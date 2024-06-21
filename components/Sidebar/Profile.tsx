@@ -1,15 +1,16 @@
 import { createClient } from "@/lib/supabase/client";
-import { User } from "@prisma/client";
+import ExtendedUser from "@/lib/types/ExtendedUser";
 import UploadImage from "../UploadImage";
+import RenameUserForm from "../forms/RenameUserForm";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 
-const Profile = ({ user }: { user: User }) => {
+const Profile = ({ user }: { user: ExtendedUser }) => {
   const supabase = createClient();
   const { data } = supabase.storage
     .from("avatars")
     .getPublicUrl(user?.id ?? "");
-  const url = `${data.publicUrl}?t=${user?.updatedAt}` ?? "";
+  const url = `${data.publicUrl}?t=${user?.avatar?.updatedAt}` ?? "";
 
   return (
     <Dialog>
@@ -21,7 +22,10 @@ const Profile = ({ user }: { user: User }) => {
         <h2>{user.name}</h2>
       </DialogTrigger>
       <DialogContent>
-        <UploadImage user={user} />
+        <div className="flex h-screen flex-col justify-center rounded bg-white p-8 dark:bg-gray2 md:h-auto">
+          <UploadImage user={user} />
+          <RenameUserForm user={user} />
+        </div>
       </DialogContent>
     </Dialog>
   );

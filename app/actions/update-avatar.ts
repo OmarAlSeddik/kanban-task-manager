@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
 const updateAvatar = async (userId: string, image: string) => {
-  await db.user.update({
+  await db.avatar.update({
     where: {
       id: userId,
     },

@@ -22,9 +22,8 @@ import { useState, useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
-const AddBoardForm = () => {
+const AddBoardForm = ({ setOpen }: { setOpen: (state: boolean) => void }) => {
   const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof BoardSchema>>({
@@ -42,19 +41,13 @@ const AddBoardForm = () => {
 
   function onSubmit(values: z.infer<typeof BoardSchema>) {
     setError("");
-    setSuccess("");
 
     startTransition(() => {
       createBoard(values)
         .then((data) => {
           if (data?.error) {
             setError(data.error);
-          }
-
-          if (data?.success) {
-            console.log(data.success);
-            setSuccess(data.success);
-          }
+          } else setOpen(false);
         })
         .catch((error) => {
           console.log(error);
@@ -128,11 +121,15 @@ const AddBoardForm = () => {
             ))}
           </div>
         </div>
-        <Button type="button" onClick={() => append({ title: "" })}>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => append({ title: "" })}
+        >
           + Add New Column
         </Button>
         <SubmitButton isPending={isPending}>Create Board</SubmitButton>
-        <FormResult errorMessage={error} successMessage={success} />
+        <FormResult errorMessage={error} />
       </form>
     </Form>
   );
